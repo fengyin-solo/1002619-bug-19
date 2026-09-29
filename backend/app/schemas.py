@@ -19,6 +19,7 @@ class ActionResult(BaseModel):
     ok: bool
     message: str
     entry: dict[str, Any] | None = None
+    missing: list[str] = []
 
 
 class EntryPayload(BaseModel):
@@ -26,6 +27,14 @@ class EntryPayload(BaseModel):
 
     values: dict[str, Any] = Field(default_factory=dict)
     remark: str | None = None
+
+
+class LoadingPayload(BaseModel):
+    """装机填报单提交：带批次号与基线版本，用于去重与并发判定。"""
+
+    values: dict[str, Any] = Field(default_factory=dict)
+    batch_id: str | None = None
+    base_version: int | None = None
 
 
 

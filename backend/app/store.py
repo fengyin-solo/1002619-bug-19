@@ -14,6 +14,8 @@ class Store:
         self._tables: dict[str, list[dict[str, Any]]] = {
             name: [dict(row) for row in rows] for name, rows in SEED_ROWS.items()
         }
+        # 各模块的暂存填报单：刷新页面后草稿还在
+        self._drafts: dict[str, dict[str, Any]] = {}
 
     def module_names(self) -> list[str]:
         return sorted(self._tables)
@@ -26,6 +28,19 @@ class Store:
             if int(row.get("id", 0)) == entry_id:
                 return row
         return None
+
+    def draft(self, module: str) -> dict[str, Any]:
+        """读取某模块的暂存填报单；没有时返回空字典。"""
+        return dict(self._drafts.get(module, {}))
+
+    def save_draft(self, module: str, values: dict[str, Any]) -> dict[str, Any]:
+        """暂存填报单：只更新传入的字段，保留之前已填的内容。"""
+        current = self._drafts.setdefault(module, {})
+        current.update(values)
+        return dict(current)
+
+    def clear_draft(self, module: str) -> None:
+        self._drafts.pop(module, None)
 
     def overview(self) -> dict[str, object]:
         modules: list[dict[str, object]] = []
