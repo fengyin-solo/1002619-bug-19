@@ -28,6 +28,16 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class LoadResult(BaseModel):
+    """装机填报单提交结果：失败时把原填报内容退回给前端。"""
+
+    ok: bool
+    message: str
+    loaded: list[dict[str, Any]] = Field(default_factory=list)
+    failures: list[dict[str, Any]] = Field(default_factory=list)
+    form: dict[str, Any] | None = None
+
+
 
 class FlightstandEntry(BaseModel):
     """机位明细结构。"""
